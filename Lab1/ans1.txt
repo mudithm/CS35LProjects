@@ -1,0 +1,85 @@
+Name:	Mudith Mallajosyula
+UID:	404937201
+Lab: 	Lab 2
+
+
+1. man -k <search term>
+
+   Found in the Options section of man man
+
+2. mv: /usr/local/cs/bin/mv
+   sh: /bin/sh
+
+   Found using which
+
+3. tr:	Translate or delete characters
+   ar:	create, modity, and extract from archives
+   pr:	convert text files for printing
+
+   Found using: find /usr/bin/ -executable -type f -name "?r"  and man
+
+4. /etc/alternatives/emacs
+
+   Found using: readlink /usr/bin/emacs
+
+5. /usr/bin/gcc:  Version 4.4.7
+            gcc:  Version 4.9.2
+
+   They are different programs because gcc is a link to /usr/local/bin/gcc,
+   which has a different version installed
+
+   Found using: --version and which
+
+6. Gives user execute permission and removes write permission for others; also sets the owner id
+
+7. I didn't find any directories that had been modified in the past 4 weeks.
+
+   Found using; find /usr/local/cs -type d -mtime -28
+
+8. 125 of the files are symbolic links
+
+   Found using: which find, ls /bin -L
+
+9. There were several files with the same oldest date. The first of these was:
+   /eclipise.configuratoin.org.eclipse.osgi/.manager/.fileTable.4
+
+   The rest were: 
+
+   /eclipse/configuration/org.eclipse.osgi/.manager/.fileTable.5
+   /eclipse/configuration/org.eclipse.osgi/.state.1 
+   /eclipse/configuration/org.eclipse.osgi/.lazy.1
+   /eclipse/configuration/org.eclipse.osgi/.bundledata.1
+
+   These files were all modified on January 19th, 2011, at 12:53:25
+
+   Found using: find /usr/lib64/ -type f -name ".*" -ls and stat
+
+10. The locale command gets its data from the current locale environment or all locales
+
+    Found using: man locale
+
+11. downcase-region and downcase-word
+
+    Found using: M-x d o w n c a s e ENTER
+
+12. C-M-r performs a reverse regular expression search
+    C-M-v scrolls the other window down if you have more than one open in emacs
+
+    Found using: C-h c C-M-r
+    	    and: C-h c C-M-v
+
+13. C-g is the keyboard quit command. It signals a "quit" condition. During the
+    execution of Lisp code, it causes a direct quit. As an editor command, it beeps at
+    top-level.
+
+    Found using: C-h k C-g
+
+14. The yank function reinserts or "pastes" the last stretch of killed text.
+
+    Found using: M-x a p r o p o s - c o m m a n d Enter y a n k Enter
+
+15. The emacs dired command does not show as many "."s next to permissions, and it says
+      total used in directory 396492 available 9832520, where ls -l says
+      total 395540
+
+      Found using: ls -l and M-x d i r e d Enter /usr/bin
