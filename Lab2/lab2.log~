@@ -1,0 +1,47 @@
+Name:	Mudith Mallajosyula
+UID:	404937201
+Lab:	2
+
+
+Open up linux server
+
+change into Lab2 directory
+
+cat /usr/share/dict/words | sort > words
+
+
+To get website:   curl web.cs.ucla.edu/classes/fall18/cs35L/assign/assign2.html > assign2.html
+
+Tests of commands:
+
+      cat assign2.html | tr -c 'A-za-z' '[\n*]'
+
+      	  Kept the strings containing only A-Z and a-z input the same, replacing all other symbols with newlines
+
+      cat assign2.html | tr -cs 'A-za-z' '[\n*]'
+
+      	  Did the same as above but removed all whitespace
+
+      cat assign2.html | tr -cs 'A-za-z' '[\n*]' | sort
+
+      	  Sorted the output of the previous in ASCII order
+
+      cat assign2.html | tr -cs 'A-za-z' '[\n*]' | sort -u
+
+      	  Did the same as the previous, but listed each string only once
+	  
+      cat assign2.html | tr -cs 'A-za-z' '[\n*]' | sort -u | comm - words
+
+      	  Outputted a three column list in which the first column represents strings contained only within the
+	  assign2 file, the second only in the words file, and the third in both files.
+
+	  also used man comm to find this
+
+      cat assign2.html | tr -cs 'A-za-z' '[\n*]' | sort -u | comm -23 - words
+
+      	  outputs the same as the previous command, but with the second and third columns suppressed.
+	  So, only the strings that appear solely in the first file.
+
+
+
+      	  

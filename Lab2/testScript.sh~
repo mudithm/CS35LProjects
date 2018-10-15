@@ -38,7 +38,7 @@ do
     echo $word >> SAMPLE2
 done
 
-# remove non-Hawaiian words and sort the words in the file
+# sort the words in the file
 cat SAMPLE2 | egrep -o "^[pk'mnwlhaeiou]*$" | sort -u > SAMPLE
 
 
