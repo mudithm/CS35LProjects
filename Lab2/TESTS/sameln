@@ -1,26 +1,35 @@
 #!/bin/bash
 
-fileList=$(ls -lap | grep -v / | grep -v "\->" |  sort -u)
-
+#get the list of the files in the directory mentioned in the argument
+fileList=$(find $1 -maxdepth 1 -type f -iname "^./.*"| sort -u)
+fileList=$fileList$(find $1 -maxdepth 1 -type f | sort -u)
 echo "$fileList"
 test=""
 
-
 echo "==================="
+
+#iterate through each file in the list
 while read file;
 do
     echo "$file"
-    while read otherFiles
+    #compare it to each of the other files in the list
+    while read otherFile
     do
-	echo "$file --- $otherFiles"
-	if [ $file != $otherFiles ] 
-	then	    
-	    test=$(comm -3 <(sort $file) <(sort $otherFiles))
+	echo "$file --- $otherFile"
+	#if the files have the same name, skip
+	if [ $file != $otherFile ] 
+	then
+	    #compare the two files to see if their content is the same
+	    test=$(comm -3 <(sort $file) <(sort $otherFile))
 	    if [ "$test" = "" ]
 	    then
+		#create a hardlink if files are same
 		echo -e "copy! \n -----"
 		echo -e "Creating hard link: \n"
+		rm $otherFile
+		ln $file $otherFile
 	    else
+		#move on if files are different
 		echo -e "different file! \n ----"
 	    fi
 	else
@@ -32,4 +41,3 @@ done < <(echo -e "$fileList")
 
 
 echo "$fileList"
- 

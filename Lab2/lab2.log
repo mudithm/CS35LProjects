@@ -57,7 +57,6 @@ Getting the Hawaiian dictionary file:
 Creating the buildwords script involved some trial and error with egrep and sed,
 but was ultimately stratightforward. Here is the resulting script:
 
-
 #!/bin/bash
 
 # add the comma to the field separators list
@@ -90,21 +89,17 @@ done < <(echo -e "$INPUTSTRING")
 dictHawaii=$(echo -e "$dictHawaii" | tr A-Z a-z | tr '`' "'")
 
 # remove remaining html tags
-
-dictHawaii=$(echo -e "$dictHawaii" | sed
-'s/<td>//g' | sed 's/<\/td>//g' | sed 's/<u>//g' | sed 's/<\/u>//g')
+dictHawaii=$(echo -e "$dictHawaii" | sed 's/<td>//g' | sed 's/<\/td>//g')
+dictHawaii=$(echo -e "$dictHawaii" | sed 's/<u>//g' | sed 's/<\/u>//g')
 
 #move all words to new lines
 dictHawaii=$(echo -e "$dictHawaii" | sed 's/[, ]/\n/g')
 
-# remove non-Hawaiian words and sort the words in the string dictHawaii=$(echo
--e "$dictHawaii" | egrep -o "^[pk'mnwlhaeiou]*$" | sort -u)
+# remove non-Hawaiian words and sort the words in the string
+dictHawaii=$(echo -e "$dictHawaii" | egrep -o "^[pk'mnwlhaeiou]*$" | sort -u)
 
-#outputs the final dictionary
-echo -e "$dictHawaii"
-
-
-
+#outputs the final dictionary without whitespace
+echo -e "$dictHawaii" | tr -d '[:blank:]'
 
 Modifying the spell checking shell command:
 
