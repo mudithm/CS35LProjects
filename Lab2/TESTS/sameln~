@@ -1,0 +1,36 @@
+#!/bin/bash
+
+fileList=$(ls -lap | grep -v / | grep -v "\->" |  sort -u)
+
+echo "$fileList"
+test=""
+
+
+echo "==================="
+while read file;
+do
+    echo "$file"
+    while read otherFiles
+    do
+	echo "$file --- $otherFiles"
+	if [ $file != $otherFiles ] 
+	then	    
+	    test=$(comm -3 <(sort $file) <(sort $otherFiles))
+	    if [ "$test" = "" ]
+	    then
+		echo -e "copy! \n -----"
+		echo -e "Creating hard link: \n"
+		ln $file $otherFiles
+	    else
+		echo -e "different file! \n ----"
+	    fi
+	else
+	    echo -e "same file! \n -----"
+	fi
+    done < <(echo -e "$fileList")
+    echo -e "\n\n======================\n\n"
+done < <(echo -e "$fileList")
+
+
+echo "$fileList"
+ 

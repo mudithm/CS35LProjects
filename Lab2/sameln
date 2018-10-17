@@ -1,0 +1,37 @@
+#!/bin/bash
+
+fileList=$(ls -ap | grep -v / | sort -u)
+
+echo "$fileList"
+test=""
+
+
+echo "==================="
+while read file
+do
+    echo "$file"
+    while read otherFiles
+    do
+	echo "$file --- $otherFiles"
+	if [ $file != $otherFiles ] 
+	then	    
+	    test=$(comm -3 <(sort $file) <(sort $otherFiles))
+	    echo "got here"
+	    if [ "$test" = "" ]
+	    then
+	       echo -e "Same file! \n -----"
+	    else
+		echo -e "different file! \n ----"
+	    fi
+	else
+	    echo -e "different file! \n -----"
+	fi
+    done
+    
+
+    
+done < <(echo "$fileList")
+
+
+
+ 

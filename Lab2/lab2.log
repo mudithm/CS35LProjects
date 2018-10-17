@@ -3,20 +3,24 @@ UID:	404937201
 Lab:	2
 
 
-Open up linux server
 
-change into Lab2 directory
+Statup tasks:
+       Open up linux server
 
-cat /usr/share/dict/words | sort > words
+       change into Lab2 directory
+
+       cat /usr/share/dict/words | sort > words
 
 
-To get website:   curl web.cs.ucla.edu/classes/fall18/cs35L/assign/assign2.html > assign2.html
+To get website: curl web.cs.ucla.edu/classes/fall18/cs35L/assign/assign2.html >
+       		assign2.html
 
 Tests of commands:
 
       cat assign2.html | tr -c 'A-za-z' '[\n*]'
 
-      	  Kept the strings containing only A-Z and a-z input the same, replacing all other symbols with newlines
+      	  Kept the strings containing only A-Z and a-z input the same, replacing
+      	  all other symbols with newlines
 
       cat assign2.html | tr -cs 'A-za-z' '[\n*]'
 
@@ -32,19 +36,92 @@ Tests of commands:
 	  
       cat assign2.html | tr -cs 'A-za-z' '[\n*]' | sort -u | comm - words
 
-      	  Outputted a three column list in which the first column represents strings contained only within the
-	  assign2 file, the second only in the words file, and the third in both files.
+      	  Outputted a three column list in which the first column represents
+	  strings contained only within the assign2 file, the second only in the
+	  words file, and the third in both files.
 
 	  also used man comm to find this
 
       cat assign2.html | tr -cs 'A-za-z' '[\n*]' | sort -u | comm -23 - words
 
-      	  outputs the same as the previous command, but with the second and third columns suppressed.
-	  So, only the strings that appear solely in the first file.
+      	  outputs the same as the previous command, but with the second and
+	  third columns suppressed.  So, only the strings that appear solely in
+	  the first file.
 
 
-
-Getting the file:
+Getting the Hawaiian dictionary file:
 
 	wget http://mauimapp.com/moolelo/hwnwdseng.htm
 
+
+Creating the buildwords script involved some trial and error with egrep and sed,
+but was ultimately stratightforward. Here is the resulting script:
+
+
+#!/bin/bash
+
+# add the comma to the field separators list
+IFS="$IFS ,"
+
+INPUTSTRING=$(cat)
+
+# reduce the file to only the items between <td> and </td>
+INPUTSTRING=$(echo "$INPUTSTRING" | egrep -o '<td>(..*)</td>')
+
+# declares a boolean variable to keep track of state
+state=true
+
+# declares a string to contain the text of the file
+dictHawaii=""
+
+# remove every other line of the code, leaving only the
+# hawaiian words
+while read -r p
+do
+    if [ "$state" = false ] ; then
+        dictHawaii="$dictHawaii \n $p"
+	state=true
+    else
+	state=false
+    fi  
+done < <(echo -e "$INPUTSTRING")
+
+# replace ascii grave accent with apostrophe
+dictHawaii=$(echo -e "$dictHawaii" | tr A-Z a-z | tr '`' "'")
+
+# remove remaining html tags
+
+dictHawaii=$(echo -e "$dictHawaii" | sed
+'s/<td>//g' | sed 's/<\/td>//g' | sed 's/<u>//g' | sed 's/<\/u>//g')
+
+#move all words to new lines
+dictHawaii=$(echo -e "$dictHawaii" | sed 's/[, ]/\n/g')
+
+# remove non-Hawaiian words and sort the words in the string dictHawaii=$(echo
+-e "$dictHawaii" | egrep -o "^[pk'mnwlhaeiou]*$" | sort -u)
+
+#outputs the final dictionary
+echo -e "$dictHawaii"
+
+
+
+
+Modifying the spell checking shell command:
+
+cat foo.html | tr '[:upper:]' '[:lower:]' | tr -cs "pk'mnwlhaeiou" '[\n*]' |
+sort -u | comm -23 hwords
+
+
+
+Testing on the assignment page:
+
+wget web.cs.ucla.edu/classes/fall18/cs35L/assign/assign2.html
+
+cat assign2.html | tr '[:upper:]' '[:lower:]' | tr -cs "pk'mnwlhaeiou" '[\n*]' |
+sort -u | comm -23 - hwords
+
+Results in many results. Any word with the 'okina is marked as misspelled in
+English, including contractions (like doesn't). Words that contain letters
+outside of those specified as Hawaiian are misspelled in Hawaiian but not in
+English. (ie web, misspelled, unique, etc).
+ 

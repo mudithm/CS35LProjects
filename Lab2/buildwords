@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# add the comma to the field separators list
+IFS="$IFS ,"
+
+INPUTSTRING=$(cat)
+
+# reduce the file to only the items between <td> and </td>
+INPUTSTRING=$(echo "$INPUTSTRING" | egrep -o '<td>(..*)</td>')
+
+# declares a boolean variable to keep track of state
+state=true
+
+# declares a string to contain the text of the file
+dictHawaii=""
+
+# remove every other line of the code, leaving only the
+# hawaiian words
+while read -r p
+do
+    if [ "$state" = false ] ; then
+        dictHawaii="$dictHawaii \n $p"
+	state=true
+    else
+	state=false
+    fi  
+done < <(echo -e "$INPUTSTRING")
+
+# replace ascii grave accent with apostrophe
+dictHawaii=$(echo -e "$dictHawaii" | tr A-Z a-z | tr '`' "'")
+
+# remove remaining html tags
+dictHawaii=$(echo -e "$dictHawaii" | sed 's/<td>//g' | sed 's/<\/td>//g' | sed 's/<u>//g' | sed 's/<\/u>//g')
+
+#move all words to new lines
+dictHawaii=$(echo -e "$dictHawaii" | sed 's/[, ]/\n/g')
+
+# remove non-Hawaiian words and sort the words in the string
+dictHawaii=$(echo -e "$dictHawaii" | egrep -o "^[pk'mnwlhaeiou]*$" | sort -u)
+
+#outputs the final dictionary
+echo -e "$dictHawaii"
+
