@@ -1,43 +1,35 @@
 #!/bin/bash
 
 #get the list of the files in the directory mentioned in the argument
-fileList=$(find $1 -maxdepth 1 -type f -iname "^./.*"| sort -u)
-fileList=$fileList$(find $1 -maxdepth 1 -type f | sort -u)
-echo "$fileList"
-test=""
+fileList=$(find $1 -maxdepth 1 -type f -name ".*" | sort -u)
+fileList=$fileList$'\n'$(find $1 -maxdepth 1 -type f ! -name ".*" | sort -u)
 
-echo "==================="
+test=""
 
 #iterate through each file in the list
 while read file;
 do
-    echo "$file"
+
     #compare it to each of the other files in the list
     while read otherFile
     do
-	echo "$file --- $otherFile"
+
 	#if the files have the same name, skip
-	if [ $file != $otherFile ] 
+	if [ "$file" != "$otherFile" ] 
 	then
 	    #compare the two files to see if their content is the same
-	    test=$(comm -3 <(sort $file) <(sort $otherFile))
+	    test=$(comm -3 <(sort "$file") <(sort "$otherFile"))
 	    if [ "$test" = "" ]
 	    then
 		#create a hardlink if files are same
-		echo -e "copy! \n -----"
-		echo -e "Creating hard link: \n"
-		rm $otherFile
-		ln $file $otherFile
-	    else
-		#move on if files are different
-		echo -e "different file! \n ----"
-	    fi
-	else
-	    echo -e "same file! \n -----"
+
+		rm "$otherFile"
+		ln "$file" "$otherFile"
+	     fi
 	fi
     done < <(echo -e "$fileList")
-    echo -e "\n\n======================\n\n"
+
 done < <(echo -e "$fileList")
 
 
-echo "$fileList"
+

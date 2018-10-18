@@ -54,6 +54,8 @@ Getting the Hawaiian dictionary file:
 	wget http://mauimapp.com/moolelo/hwnwdseng.htm
 
 
+------------------------------------------------------------------------------
+
 Creating the buildwords script involved some trial and error with egrep and sed,
 but was ultimately stratightforward. Here is the resulting script:
 
@@ -67,7 +69,7 @@ INPUTSTRING=$(cat)
 # reduce the file to only the items between <td> and </td>
 INPUTSTRING=$(echo "$INPUTSTRING" | egrep -o '<td>(..*)</td>')
 
-# declares a boolean variable to keep track of state
+# declares a "boolean" variable to keep track of state
 state=true
 
 # declares a string to contain the text of the file
@@ -101,12 +103,21 @@ dictHawaii=$(echo -e "$dictHawaii" | egrep -o "^[pk'mnwlhaeiou]*$" | sort -u)
 #outputs the final dictionary without whitespace
 echo -e "$dictHawaii" | tr -d '[:blank:]'
 
+
+----------------------------------------------
+
 Modifying the spell checking shell command:
 
 cat foo.html | tr '[:upper:]' '[:lower:]' | tr -cs "pk'mnwlhaeiou" '[\n*]' |
 sort -u | comm -23 hwords
 
+This command uses the same logic as the one we used before, meaning that words
+will be truncated, etc according to their adherence to the letters of
+hawaiian. So, rather than finding all the words that were misspelled, it finds
+only words or portions of words that contain only hawaiian characters and checks
+which of those are misspelled as per the dictionary.
 
+--------------------------------------------
 
 Testing on the assignment page:
 
