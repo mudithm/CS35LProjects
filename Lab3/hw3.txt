@@ -1,0 +1,28 @@
+Name: Mudith Mallajosyula
+UID:  404937201
+Lab   2
+
+
+Q1.  The patch improves the performance of ls in terms of speed; it replaces an
+     if statement with an assignment statement.
+
+Q2.  If any other code used by the company was designed with the previous
+     behavior of ls -aA (or any other such permutation) in mind, it might behave
+     incorrectly. For example, if something expects ls -aA to include . and ..,
+     or if it expects that the ignore_mode variable will only change if it is
+     the default, it might have its own workaround, which would be made obsolete
+     or incorrect by the patch.
+
+Q3.  If the script is invoked with an empty file, it raises an IndexError. This
+     is because the chooseLine() function makes use of random.py's choice
+     function, which raises this error if it is passed an empty sequence as its
+     input.
+
+Q4.  If you run the script with Python3, it results in a syntax error on line
+     65, where the line
+     	 except IOError as (errno, strerror):
+     is present. This syntax works with Python 2.x because of something called
+     "automatic tuple unpacking." Python 2 is able to iterate through the two
+     arguments to errno by this process. Python 3 removed this functionality,
+     and so iIn Python 3, this is invalid syntax; instead, the errno and
+     strerror errors should be examined individually.
