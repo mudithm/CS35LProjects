@@ -10,12 +10,15 @@ class shuf:
         elif filename == "-" or filename == "":
             self.lines = sys.stdin.readlines()
         else:
-            f = open (filename, 'r')
-            self.lines = f.readlines()
-            f.close()
-            
-    
-            
+            try:
+                f = open (filename, 'r')
+                self.lines = f.readlines()
+                f.close()
+            except FileNotFoundError as e:
+                sys.stderr.write("shuf.py: {0}: No such file or directory\n".
+                                 format(filename))
+                sys.exit(2)
+                
     def randomize(self):
         if len(self.lines) == 0:
             return ""
@@ -24,6 +27,9 @@ class shuf:
         return out
 
     def chooseline(self):
+        if len(self.lines) == 0:
+            sys.stderr.write("shuf.py: no lines to repeat\n")
+            sys.exit(2)
         return random.choice(self.lines)
 
 
@@ -78,7 +84,7 @@ def main():
         # error checking:
 
         # n before i
-        if parser.values.n_first:
+        if options.COUNT != None and parser.values.n_first:
             if options.COUNT != None:
                 try:
                     int(options.COUNT)
@@ -127,7 +133,7 @@ def main():
                     if (loo - hii) > 1:
                         parser.exit(2, "shuf.py: invalid range: '{0}'\n". 
                              format(options.LO_HI))
-                except ValueError as e:
+                except (ValueError, IndexError) as e:
                     parser.exit(2, "shuf.py: invalid input range: '{0}'\n".
                           format(emg))
                 if len(args) > 0:
@@ -143,13 +149,7 @@ def main():
 
                 if int(options.COUNT) < 0:
                     parser.exit(2, "shuf.py: invalid line count: '{0}'\n".
-                         format(options.COUNT))
-
-
-
-
-
-        
+                         format(options.COUNT))     
 
 
 
@@ -219,6 +219,7 @@ def main():
                         print(input_file.chooseline())
                         i+=1
                 else:
+                    
                     i=0
                     while i != line_count:
                         sys.stdout.write(input_file.chooseline())
@@ -243,10 +244,10 @@ def main():
             parser.exit(2, "shuf.py: I/0 error({0}): {1}\n".
                      format(errno, strerror))
 
-        print (parser.values)
+
     
     except KeyboardInterrupt as e:
-        return
+        print("")
 
 if __name__ == "__main__":
     main()
