@@ -54,8 +54,8 @@ ls (GNU coreutils) 8.24
 3. We then change into the coreutilsInstall directory with
       cd ~/coreutilsInstall
 
-   Running the ls -aA and ls -a -A commands results in the same incorrect
-   behavior, showing . and .. at the beginning of ls.
+   Running the bin/ls -aA and bin/ls -a -A commands results in the same
+   incorrect behavior, showing . and .. at the beginning of ls.
 
 4. To apply the patch to the coreutils install, we first download the patch
       cd ~/Documents/CS35L/Lab3/coreutils-8.29
@@ -81,7 +81,9 @@ ls (GNU coreutils) 8.24
    	 ~/Documents/CS35L/Lab3/coreutils-8.29/src/ls -Aa and
    	 ~/Documents/CS35L/Lab3/coreutils-8.29/src/ls -a -A and
    	 ~/Documents/CS35L/Lab3/coreutils-8.29/src/ls -A -a
-   all produce the desired results. The later option now overrides the earlier.
+   all produce the desired results (when the A flag is later, the . and .. are
+   not shown, and when the a flag is later, the . and .. are both shown). The
+   later option now overrides the earlier.
       
    Running the tests in /tests/ls/a-option.sh requires the following:
    In coreutils-8.29:
@@ -89,7 +91,10 @@ ls (GNU coreutils) 8.24
    resulted in a PASS for tests/ls/a-option.sh.
 
 
-      
+   To make sure that the behavior of the original install is still incorrect, we
+   use ~/coreutilsInstall/bin/ls -aA and ~/coreutilsInstall/bin/ls -Aa.
+
+   Both commands contain . and .. , meaning they perform incorrectly.
       
       
 
