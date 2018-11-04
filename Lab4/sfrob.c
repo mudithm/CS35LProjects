@@ -61,9 +61,10 @@ int main()
     {
       readChar = inputString + size;
       *readChar = getchar();
-      size++;
+      
       if (feof(stdin))
-	  continue;
+	  break;
+      size++;
       if (size % 100 == 0)
 	inputString = realloc(inputString, size + 100);
     }
