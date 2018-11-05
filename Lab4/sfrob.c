@@ -39,11 +39,28 @@ void writeCharArray(const char* str)
 {
   while (1)
     {
-      putchar(*str);;
+      if (putchar(*str) == EOF)
+      {
+        fprintf(stderr, "Output Error");
+        exit(1);
+      }
+
       if (*str++ == ' ')
 	return;
     }
 }
+
+
+void checkInputError()
+{
+  if (ferror(stdin))
+  {
+    fprintf(stderr, "Input error!");
+    exit(1);
+  }
+}
+
+
 
 
 int main()
@@ -61,20 +78,35 @@ int main()
     {
       readChar = inputString + size;
       *readChar = getchar();
+      checkInputError();
       
       if (feof(stdin))
-	  break;
+	       break;
       size++;
       if (size % 100 == 0)
-	inputString = realloc(inputString, size + 100);
+      {
+	       inputString = realloc(inputString, size + 100);
+          if (inputString == NULL)
+            {
+              free(inputString);
+              fprintf(stderr, "Memory allocation error");
+              exit(1);
+            }
+      }
     }
   // If stdin is not empty and the last character is not a space, add a space
   if (size > 0)
     if (inputString[size-1] != ' ')
       {
-	inputString = realloc(inputString, size+1);
-	inputString[size] = ' ';
-	size++;
+      	inputString = realloc(inputString, size+1);
+        if (inputString == NULL)
+            {
+              free(inputString);
+              fprintf(stderr, "Memory allocation error");
+              exit(1);
+            }
+      	inputString[size] = ' ';
+      	size++;
       }
   
   // Add the individual space-separated strings to an array for sorting
@@ -82,17 +114,23 @@ int main()
   while (i < size)
     {
       if (inputString[i] == ' ' && !prevCharSpace)
-	{
-	  arrSize++;
-	  if (arrSize % 100 == 0)
-	    {
-	      arrayToSort = realloc(arrayToSort, (arrSize * sizeof(char*) + 100 * sizeof(char*)));
-	    }
-	  arrayToSort[arrSize] = inputString + i + 1;
-	  prevCharSpace = 1;
-	}
+    	{
+    	  arrSize++;
+    	  if (arrSize % 100 == 0)
+    	    {
+    	      arrayToSort = realloc(arrayToSort, (arrSize * sizeof(char*) + 100 * sizeof(char*)));
+            if (arrayToSort == NULL)
+            {
+              free(arrayToSort);
+              fprintf(stderr, "Memory allocation error");
+              exit(1);
+            }
+    	    }
+    	  arrayToSort[arrSize] = inputString + i + 1;
+    	  prevCharSpace = 1;
+    	}
       else
-	prevCharSpace = 0;
+	     prevCharSpace = 0;
       i++;
     }
 
