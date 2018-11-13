@@ -1,37 +1,38 @@
 #!/bin/bash
 
-fileList=$(ls -ap | grep -v / | sort -u)
+#get the list of the files in the directory mentioned in the argument
+fileList=$(find $1 -maxdepth 1 -type f -name ".*" | sort -u)
 
-echo "$fileList"
+#check if any files starting with . were found, and if so adds a newline
+if [ "$fileList" != "" ]
+then
+    fileList=$fileList$'\n'
+fi
+
+fileList=$fileList$(find $1 -maxdepth 1 -type f ! -name ".*" | sort -u)
+
 test=""
 
-
-echo "==================="
-while read file
+#iterate through each file in the list
+while read file;
 do
-    echo "$file"
-    while read otherFiles
+    #compare it to each of the other files in the list
+    while read otherFile
     do
-	echo "$file --- $otherFiles"
-	if [ $file != $otherFiles ] 
-	then	    
-	    test=$(comm -3 <(sort $file) <(sort $otherFiles))
-	    echo "got here"
+	#if the files have the same name, skip
+	if [ "$file" != "$otherFile" ] 
+	then
+	    #compare the two files to see if their content is the same
+	    test=$(comm -3 <(sort "$file") <(sort "$otherFile"))
 	    if [ "$test" = "" ]
 	    then
-	       echo -e "Same file! \n -----"
-	    else
-		echo -e "different file! \n ----"
-	    fi
-	else
-	    echo -e "different file! \n -----"
+		#remove old file and create a hardlink if files are same
+		rm "$otherFile"
+		ln "$file" "$otherFile"
+	     fi
 	fi
-    done
-    
+    done < <(echo -e "$fileList")
 
-    
-done < <(echo "$fileList")
+done < <(echo -e "$fileList")
 
 
-
- 
