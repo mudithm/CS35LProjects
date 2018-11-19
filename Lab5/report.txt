@@ -1,0 +1,246 @@
+Name:  Mudith Mallajosyula
+UID:   404937201
+Lab:   2
+
+
+
+lab.txt
+---
+
+tr2b and tr2u attempt to replicate the functionality of the tr bash command,
+with certain restrictions, as mentioned in the assignment specification.
+
+tr2b uses buffered I/O while tr2u uses system calls directly for I/O.
+
+Both tr2b and tr2u used the same logic, with only the reading and writing
+implementations differing. Therefore, the differences in performance should be
+due mostly to the difference between library functions and system calls.
+
+
+tr2b used the putchar and getchar functions of the C stdio library to read and
+write.  tr2u used the read and write functions to do the same.  Both functions
+used the same logic for error checking, but different functions to write to
+stderr.
+
+
+The programs were tested with a large file of 5,000,000 bytes.  This file was
+called largeFile.txt, and was created using the C program from Piazza.
+
+
+
+
+(3a)
+Results of strace on tr2b when copying to another file:
+
+strace -o tr2b_strace ./tr2b 'abcdef' 'fabcde' < largeFile.txt > tr2b_out
+cat tr2b_strace | wc -l
+
+resulted in 186 lines, meaning that approximately 186 syscalls were made.
+
+
+Results of strace on tr2u when copying to another file:
+
+strace -o tr2u_strace ./tr2u 'abcdef' 'fabcde' < largeFile.txt > tr2u_out
+cat tr2u_strace | wc -l
+
+resulted in 10000028 lines, meaning that approximately 10000028 syscalls were
+made.
+
+Far more syscalls were made for tr2u, and it ran significantly slower.
+
+
+
+
+(3b)
+Results of strace on tr2b when copying to terminal:
+
+strace -o tr2b_strace ./tr2b 'abcdef' 'fabcde' < largeFile.txt
+cat tr2b_strace | wc -l
+
+resulted in 4992 lines, meaning that approximately 4992 syscalls were made.
+
+
+Results of strace on tr2u when copying to terminal:
+
+strace -o tr2u_strace ./tr2u 'abcdef' 'fabcde' < largeFile.txt
+cat tr2u_strace | wc -l
+
+resulted in 10000028 lines, meaning that approximately 10000028 syscalls were
+made.
+
+Again, far more syscalls were made for tr2u, and it ran significantly
+slower. The number of syscalls for tr2u did not change, but the number of
+syscalls for tr2b increased significanty.
+
+
+(4)
+Result of time on tr2b when copying to file:
+time ./tr2b 'abcdef' 'fabcde' < largeFile.txt > tr2b_out
+
+real    0m0.502s
+user    0m0.443s
+sys     0m0.012s
+
+
+Result of time on tr2u when copying to file:
+time ./tr2u 'abcdef' 'fabcde' < largeFile.txt > tr2u_out
+
+real    0m8.458s
+user    0m1.163s
+sys     0m7.256s
+
+
+The buffered I/O method is clearly faster than the individual syscall method,
+largely because the number of system calls that are made is much, much lower.
+
+
+----
+----
+
+
+report.txt
+---
+
+
+Running time with empty file (0 lines, 0 words):
+./sfrob(/u) < file | od -ta
+
+sfrob
+real    0m0.002s
+user    0m0.001s
+sys     0m0.001s
+
+sfrobu
+real    0m0.002s
+user    0m0.000s
+sys     0m0.001s
+
+
+Running time with a small file (1 line, 9 words):
+./sfrob(/u) < file2 | od -ta
+
+sfrob
+real    0m0.003s
+user    0m0.000s
+sys     0m0.001s
+
+sfrobu
+real    0m0.002s
+user    0m0.000s
+sys     0m0.001s
+
+
+Running time with a large file (0 lines, 52100 words):
+./sfrob(/u) < file3 | od -ta
+
+sfrob
+real    0m47.856s
+user    0m0.512s
+sys     0m0.013s
+
+sfrobu
+real    0m37.863s
+user    0m0.327s
+sys     0m0.039s
+
+
+Running time with /proc/self/status (40 lines, 100 words):
+./sfrob(/u) < /proc/self/status | od -ta
+
+sfrob
+real    0m0.002s
+user    0m0.001s
+sys     0m0.001s
+
+sfrobu
+real    0m0.006s
+user    0m0.002s
+sys     0m0.000s
+
+
+
+Running time with printf "*~BO *{_CIA *hXE]D *LER #@_GZY #E\\OX #^BO #FKPS #NEM\4" (1 line, 9 words)
+printf "*~BO *{_CIA *hXE]D *LER #@_GZY #E\\OX #^BO #FKPS #NEM\4" | ./sfrob(/u) | od -ta
+
+sfrob
+real    0m0.003s
+user    0m0.000s
+sys     0m0.001s
+
+sfrobu
+real    0m0.002s
+user    0m0.000s
+sys     0m0.001s
+
+
+The number of comparisons has more to do with the number of words than the
+number of lines, since the large file, with 52100 words, is only one line long.
+
+In terms of the number of lines, however, the relationship is relatively linear.
+
+---
+
+
+Comparing sfrob, sfrobu, and sfrobs, we find that sfrob is usually the fastest,
+sfrobu usually a close second, and sfrobs the slowest.
+
+
+Small file comparison:
+./sfrob(/u/s) < file | od -ta
+
+sfrobu:
+real    0m0.002s
+user    0m0.001s
+sys     0m0.001s
+
+sfrob:
+real    0m0.003s
+user    0m0.001s
+sys     0m0.002s
+
+sfrobs:
+real    0m0.008s
+user    0m0.004s
+sys     0m0.010s
+
+
+Medium file comparison:
+./sfrob(/u/s) < file3 | od -ta
+
+sfrobu:
+real    0m0.004s
+user    0m0.000s
+sys     0m0.005s
+
+sfrob:
+real    0m0.003s
+user    0m0.001s
+sys     0m0.001s
+
+sfrobs:
+real    0m0.009s
+user    0m0.006s
+sys     0m0.008s
+
+
+Large file comparison:
+./sfrob(/u/s) < largeFile.txt | od -ta
+
+sfrobu:
+real    2m39.716s
+user    0m1.489s
+sys     0m0.881s
+
+
+sfrob:
+real    2m19.251s
+user    0m1.970s
+sys     0m1.116s
+
+sfrobs:
+real    3m42.564s
+user    0m1.730s
+sys     0m1.122s
+
+
+

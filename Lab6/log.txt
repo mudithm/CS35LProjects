@@ -1,0 +1,71 @@
+Name:  Mudith Mallajosyula
+UID:   404937201
+Lab    2
+
+
+
+
+I first ran the sort command to ensure that I was using a new enough version.
+
+   /usr/sort --version
+     
+Then, I had to create 2^24 random single-precision floating point numbers. Since
+a single-precision floating point number is 4 bytes, this required 67108864
+bytes of data. We combine urandom with od as follows:
+
+   temp=$(echo  2^24*4| bc) && od -An -f -N $temp < /dev/urandom
+
+Then, to replace the spaces generated with newlines,
+
+    tr -s ' ' '\n'
+
+And then I wrote the results into a file:
+
+    > file.t
+
+
+
+Testing sort:
+
+First, without the --parallel flag:
+
+   time -p sort -g file.t > /dev/null
+
+   real 32.79
+   user 180.30
+   sys 0.58
+
+Then with --parallel:
+
+   1 Thread:
+   time -p sort -g --parallel=1 file.t > dev/null
+
+   real 171.59
+   user 171.29
+   sys 0.30
+   
+   2 Threads:
+   time -p sort -g --parallel=2 file.t > dev/null
+
+   real 91.73
+   user 175.01
+   sys 0.34
+
+   4 Threads:
+   time -p sort -g --parallel=4 file.t > dev/null
+
+   real 51.27
+   user 171.13
+   sys 0.48
+
+   8 Threads:
+   time -p sort -g --parallel=8 file.t > dev/null
+
+   real 33.28
+   user 180.53
+   sys 0.60
+   
+
+By default, the sort command seems to use the 8 thread version.
+
+Doubling the number of threads roughly halves the execution time.
