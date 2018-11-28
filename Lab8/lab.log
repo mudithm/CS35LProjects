@@ -1,0 +1,106 @@
+Name:  	Mudith Mallajosyula
+UID:	404937201
+Lab		2
+
+Partners: Anshul Kale, Lab 6 and Samuel Tang, Lab 2
+---
+
+
+Startup:
+
+First, I ssh-d into the beaglebone and checked that I had openssh-client and openssh-server installd
+	dpkg
+
+
+Server Side:
+-----------
+ 
+Then, I generated a public/private rsa key pair at the deault location using ssh-keygen, with the password "beaglebone"
+At first, I tried using the password "ball," but this was too short.
+
+	ssh-keygen
+	beaglebone
+
+ 
+Then, I created a new user, "ansh",  and set his password to "ilove35l"
+
+	sudo useradd -d /home/ansh -m ansh
+	sudo passwd ansh
+	ilove35l
+
+I then created a .ssh directory for ansh,
+	cd /home/ansh
+	sudo mkdir .ssh
+
+Then, I changed the ownership and permissions so that these directories were owned by the ansh user
+
+	sudo chown -R ansh .ssh
+	sudo chmod 700 .ssh
+
+This sets it so that the owner, ansh, has read, write, and execute permissions, and that the group and other users have no permissions.
+
+My partner performed the same steps on his machine, except with the username and directory "mud" 
+
+
+Client Side:
+------------
+
+For the client side, I created new public/private RSA keys using the password "bonebeagle"
+	
+	ssh-keygen
+	bonebeagle
+
+using the location "/root/.ssh/id_rsa2"
+
+I then conneccted to a hotspot from my phone. I found my IP address next to wlan in the output of ifconfig
+
+	ifconfig
+
+	Result: 192.168.43.133
+
+and gave it to my partner.
+
+
+My partner gave me his IP, 192.168.43.187, and I used this to send him my public key.
+
+	ssh-copy-id -i /root/.ssh/id_rsa2 mud@192.168.43.187
+
+This successfully added the key to the server.
+
+I then tried to add id_rsa2 to the agent
+	
+	ssh-add /root/.ssh/id_rsa2
+
+but I received the error "Could not open a connection to your authentication agent"
+Some research showed that this might be because the ssh-agent was not yet running, so I ran the command
+
+	exec ssh-agent bash
+
+and then tried adding id_rsa2 again, this time successfully.
+
+	ssh-add /root/.ssh/id_rsa2
+	bonebeagle
+
+I then ssh'd into the server with the server and entered the password.
+
+	ssh mud@192.168.43.187
+	ilove35l
+
+To test the connection, I created a file called file and added the text "This is a file" to the file.
+
+	touch file
+	echo "This is a file" > file
+
+This happened successfully.
+
+I exited this connection and then ssh'd again using the -X flag, and then ran firefox
+
+	ssh -X mud@192.168.43.187
+	firefox
+
+and then I disconnected and reconnected with -Y
+
+	ssh -Y mud@192.168.43.187
+	firefox
+
+Running firefox with the -Y flag seemed to be quicker; the launchtime was faster and the browser was more responsive. However, both methods were really slow, and firefox was not very usable either way.
