@@ -1,0 +1,59 @@
+Name:	Mudith Mallajosyula
+UID:	404937201
+Lab	2
+
+
+1. Created this file using emacs hw9.txt
+
+2. Checked out of the fresh repository from the Lab, diffutils-3.0.
+   	git checkout v3.0 -b quote
+
+3. Installed the patch using:
+   	patch -p1 < ../quote-3.0-patch.txt
+
+   This modified 6 files.
+
+4. Looked up the add-change-log-enty-other-window function for emacs.
+
+5. Generated a ChangeLog entry for each file using C-x 4 a in each modified file
+   	emacs src/cmp.c
+	C-x 4 a
+   And added the description
+        quote 'like this' or "like this", not `like this',
+	except in comments
+   next to each file.
+
+6. Added the files and committed changes to the branch using
+   	git add src/*.c
+   	git commit -F ChangeLog
+
+7. I then generated a patch file using
+        git format-patch --stdout -1 > ../formatted-patch.txt
+
+   The -1 flag indicates that I only want to format a patch for this commit, not
+   for the entire commit history leading up to this commit.
+
+8. I sent the patch to my partner and received his in return.
+   To test his patch, I checked out v3.0 again, this time to the branch partner
+        git checkout v3.0 -b partner
+	git am < formatted-patch-partner.txt
+   I ran make check again, but because I was not on Server 5, it failed.
+
+9. I used make distdir and checked that the resulting ChangeLog file had my chan   ges on top.
+        make distdir
+	emacs diffutils-3.0.1-100c/ChangeLog
+
+
+10. I ran gitk on the server, while sshed using the X option, and the window
+    appeared on my desktop.
+    	ssh -X mudith@lnxsrv.seas.ucla.edu
+	cd ~eggert/src/gnu/emacs
+	gitk
+
+    The newest merge that took place on 2015-01-25 had SHA1 ID
+    242354a23acf214ad06d4e3e7e5f5580c8b21d4a, and its commit message was
+    "lisp/gnus/nnimap.el Allow using the Google X-GM-LABELS, if present."
+
+
+    The roles of the subwindows in the gitk gui are described in the
+    gitk-description file.

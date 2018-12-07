@@ -1,0 +1,124 @@
+Name:  Mudith Mallajosyula
+UID:   404937201
+Lab    2
+
+
+1. First, I got the diffutils repostitory using the command
+       git clone https://git.savannah.gnu.org/git/diffutils.git
+
+2. Then, I used the git log command in the diffutils directory and piped its
+   output into a file
+   	git log > git-log.txt
+
+3. I used the git tag command in the same directory and piped its output into a
+   file
+	git tag > git-tags.txt
+
+4. I then search the git-log.txt file for the given commit:
+      cat git-log.txt | grep -B 5 "maint: quote 'like this'"
+   and see that the commit hash is 62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f
+
+   I create a patch for this commit using the command
+      git show 62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f > quote-patch.txt
+
+5. I check out Version 3.0 from the repository using the command
+      git checkout v3.0 -b version3_branch
+
+6. I use the patch command to apply the patch to version 3.0.
+      patch -p1 < quote-patch.txt
+
+7. I run git status
+      git status
+   and see many modified files and untracked new files.
+
+8. Looked up what vc-diff and vc-revert do
+   In the *vc-diff* buffer, checked the functions we could use
+   
+9. All the files that were modified are listed in the output of git status.
+   The modified files listed in the result of
+       git status | grep -vF ".c"
+   were:
+
+    modified:   NEWS
+    modified:   README
+    modified:   TODO
+    modified:   doc/diagmeet.note
+    modified:   ms/config.bat
+    modified:   ms/config.site
+    modified:   po/en.po
+    modified:   src/diff.h
+    modified:   src/system.h
+    modified:   tests/help-version
+
+   I opened each of these files with emacs and reverted the changes using
+   vc-revert
+
+	C-x v u
+	yes
+
+   The command
+     git status | grep -F ".c"
+   indicated the following c files were modified:
+
+    modified:   src/analyze.c
+    modified:   src/cmp.c
+    modified:   src/context.c
+    modified:   src/diff.c
+    modified:   src/diff3.c
+    modified:   src/dir.c
+    modified:   src/ifdef.c
+    modified:   src/io.c
+    modified:   src/sdiff.c
+    modified:   src/side.c
+    modified:   src/util.c
+											   
+
+   So, I opened all of them in emacs.
+
+       	emacs src/<file>.c
+
+    For each file, I used C-x v-= to open up the buffer, and then C-u C-c C-a
+    and on the hunks that were not merely changes to character string constants.
+
+    Running git status now only shows 6 modified c files.
+
+10. The rejected patches were in the sections for option arguments in the diff.c
+    and diff3.c files. It was fairly straightforward to find the matching line
+    in the diff c file and replace it with the corrected line from the .rej
+    file.
+
+11. I removed all the untracked file using git clean -f.
+
+12. Git status still reported about a half dozen modified files, but now nothing
+    else.
+
+    I put the git diff into a file using
+      git diff > ../quote-3.0-patch.txt
+
+    This patch file was 326 lines long.
+
+13. I built the new Diffutils using the commands listed in the README-hacking
+    file.
+
+    ./bootstrap
+    ./configure
+    ./make
+    ./make check
+
+    This last step resulted in some errors, but running the commands
+    	./src/diff . -
+	./src/diff --help
+    both resulted in the desired output.
+
+14. I first renamed the modified diffutils src code to "diffutils-3.0-patch"
+    using the mv command. I then recloned the diffutils repo and checked out
+    version 3.0 as before, and renamed its src code to "diffutils-3.0".
+
+    I ran the command
+
+      diffutils-3.0-patch/src/diff -pru diffutils-3.0   / 
+      diffutils-3.0-patch > quote-3.0-test.txt
+      	
+15. I then ran the diff command on quote-3.0-test.txt and
+    quote-3.0-patch.txt. The output of this diff shows that the patch was
+    successful.

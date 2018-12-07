@@ -1,0 +1,19 @@
+Name:	Mudith Mallajosyula
+UID:	404937201
+Lab		2
+
+
+The newest commit on 2015-01-25 had the SHA1 ID
+242354a23acf214ad06d4e3e7e5f5580c8b21d4a.
+
+The commit message is:
+ lisp/gnus/nnimap.el Allow using the Google X-GM-LABELS, if present.
+
+The subwindow in the top-left appears to be a diagram of the commit history with
+the commit messages attached.
+
+The subwindow to the in the top-center is the names of authors of each commit,
+and the window in the top-right is the timestamps of each commit.
+
+The window in the bottom-left shows the patch/diff of the commit, and the window
+in the bottom-right shows the files that were modified in the commit.
