@@ -42,8 +42,8 @@ Lab	2
 
 9. I used make distdir and checked that the resulting ChangeLog file had my
    partner's changes on top.
-	make distdir emacs
-        diffutils-3.0.1-100c/ChangeLog
+	make distdir
+	cat diffutils-3.0.1-100c/ChangeLog
 
 
 10. I ran gitk on the server, while sshed using the X option, and the window
