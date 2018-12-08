@@ -38,10 +38,12 @@ Lab	2
         git checkout v3.0 -b partner
 	git am < formatted-patch-partner.txt
    I ran make check again, but because I was not on Server 5, it failed.
+   I used the diff . - and the diff --help commands, and the output was correct.
 
-9. I used make distdir and checked that the resulting ChangeLog file had my chan   ges on top.
-        make distdir
-	emacs diffutils-3.0.1-100c/ChangeLog
+9. I used make distdir and checked that the resulting ChangeLog file had my
+   partner's changes on top.
+	make distdir emacs
+        diffutils-3.0.1-100c/ChangeLog
 
 
 10. I ran gitk on the server, while sshed using the X option, and the window
